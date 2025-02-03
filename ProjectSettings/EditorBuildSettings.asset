@@ -9,7 +9,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Opening.unity
     guid: d0a72c4288dd7eb4e9c8f9d4883422dd
   - enabled: 1
-    path: Assets/Scenes/Level1.unity
+    path: Assets/Scenes/Term1Level/Level1.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   - enabled: 1
     path: Assets/Scenes/Loss.unity
