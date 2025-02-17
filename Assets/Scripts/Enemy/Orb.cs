@@ -6,12 +6,12 @@ public class Orb : MonoBehaviour
 {
     public float movementSpeed = 6;
     public float amplitude = 0.15f;
-    private float startingHeight;
+    //private float startingHeight;
 
-    void Start()
-    {
-        startingHeight = 2;
-    }
+    //void Start()
+    //{
+    //    startingHeight = 2;
+    //}
 
     void Update()
     {

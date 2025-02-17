@@ -5,6 +5,21 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    //public static GameManager instance;
+
+    //private void Awake()
+    //{
+    //    if(instance == null)
+    //    {
+    //        instance = this;
+    //        DontDestroyOnLoad(gameObject);
+    //    }
+    //    else
+    //    {
+    //        Destroy(gameObject);
+    //    }
+    //}
+
     private static int keys = 0;
     private static int HP = 2;
     private static float staminaRecharge = 0;
@@ -23,6 +38,7 @@ public class GameManager : MonoBehaviour
     {
         keys++;
     }
+
     public static void ReduceStamina()
     {
         staminaTick += Time.deltaTime;
@@ -62,10 +78,12 @@ public class GameManager : MonoBehaviour
     {
         return keys == 2;
     }
+
     public static int GetKeys()
     {
         return keys;
     }
+
     public static int GetHP()
     {
         return HP;
@@ -88,6 +106,7 @@ public class GameManager : MonoBehaviour
 
     public static void StartGame()
     {
+        AudioManager.instance.PlayMusic();
         SceneManager.LoadScene("Level1");
     }
 
