@@ -5,14 +5,16 @@ using UnityEngine;
 public class BaseRobot : MonoBehaviour
 {
 
-    //player object
+    //transform of the player object
     private Transform playerTransform;
 
+    //variables for the changing of state
     public bool shutdown = false;
     public bool attackReady = false;
     public float searchIndex;
     public float searchLimit = 5;
     public float awareness = 0;
+
 
     //state machine
     public enum BotSM
@@ -21,15 +23,23 @@ public class BaseRobot : MonoBehaviour
     }
     public BotSM botState;
 
-    /*
+    //speed machine
+    public enum BotSpeed
+    {
+        still, slow, medium, fast
+    }
+    public BotSpeed botSpeed;
+    private float speed = 0;
+
+    /*See
      * 1 - make a vector that represents the space between the player and the bot
-     * 2 - if the magnitude of the vector
-     * 3 - and if the angle between the bots forward and the vector is smaller than the vision angle
+     * 2 - if the magnitude of the vector is within range,
+     * 3 - if the angle between the bots forward and the vector is smaller than the vision angle,
      * 4 - and if a ray cast in the direction of the vector would hit a gameObject with the Player tag
      * 5 - return the players position
      * 6 - otherwise return a zero Vector3
      */
-    public Vector3 See(float range = 60, float angle = 30)
+    public Vector3 See(float range = 60, float angle = 60)
     {
         //1
         Vector3 toPlayer = playerTransform.position - transform.position;
@@ -43,12 +53,31 @@ public class BaseRobot : MonoBehaviour
                 //4
                 if (Physics.Raycast(transform.position + Vector3.up, toPlayer, out hit, Mathf.Infinity))
                     if (hit.collider.CompareTag("Player"))
+                    {
                         //5
                         return playerTransform.position;
+                    }
         //6
         return Vector3.zero;
     }
+    /*Hear
+     * 1- make a vector that represents the space between the player and the bot
+     * 2- if the magnitude of the vector is within range, return the player position
+     * 3- otherwise return a zero vector3
+     */
+    public Vector3 Hear(float range = 10)
+    {
+        Vector3 toPlayer = playerTransform.position - transform.position;
+        toPlayer.y = 0;
+        RaycastHit hit;
+        if (toPlayer.magnitude < range)
+            return playerTransform.position;
+        return Vector3.zero;
+    }
 
+    /*Start
+     * get the player's transform and set the botstate to patrol
+     */
     void Start()
     {
         playerTransform = GameObject.Find("Player").transform;
@@ -56,7 +85,7 @@ public class BaseRobot : MonoBehaviour
     }
 
     //State Transitions
-    /* patrol
+    /* patrol state
      * 1 - if the player is seen, chase
      * 2 - if shutdown is true, die
      */
@@ -72,16 +101,14 @@ public class BaseRobot : MonoBehaviour
         if (shutdown)
             botState = BotSM.die;
     }
-    /* chase
-     * 1 - if the player is not seen, search
+    /* chase state
+     * 1 - if awarness = 0, search
      * 2 - if attackReady is true, attack
      * 3 - if shutdown is true, die
      */
     public void ChaseState()
     {
         //1
-        if (See() == Vector3.zero)
-            awareness -= 50 * Time.deltaTime;
         if(awareness < 0)
             botState = BotSM.search;
         //2
@@ -91,7 +118,7 @@ public class BaseRobot : MonoBehaviour
         if (shutdown) 
             botState = BotSM.die;
     }
-    /* attack
+    /* attack state
      * 1 - if shutdown is true, die
      * 2 - else, search
      */
@@ -100,11 +127,10 @@ public class BaseRobot : MonoBehaviour
         //1
         if (shutdown)
             botState = BotSM.die;
-        //2
-        else
-            botState = BotSM.search;
+        if (!attackReady)
+            botState = BotSM.chase;
     }
-    /* search
+    /* search state
      * 1 - if the player is seen, chase
      * 2 - if search index > search limit, patrol
      * 3 - if shutdownis true, die
@@ -128,6 +154,9 @@ public class BaseRobot : MonoBehaviour
         if (shutdown)
             botState = BotSM.die;
     }
+    /* Die state
+     * 1- in 0.6 seconds, die
+     */
     public void DieState()
     {
         Invoke("Die", 0.6f);
