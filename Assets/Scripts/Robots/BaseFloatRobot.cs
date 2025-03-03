@@ -30,15 +30,19 @@ public class BaseFloatRobot : BaseRobot
         {
             case BotSpeed.still:
                 speed = 0;
+                orb.movementSpeed = Mathf.Lerp(orb.movementSpeed, 2, 0.5f);
                 break;
             case BotSpeed.slow:
                 speed = 1.5f;
+                orb.movementSpeed = Mathf.Lerp(orb.movementSpeed, 2.5f, 0.5f);
                 break;
             case BotSpeed.medium:
                 speed = 3.5f;
+                orb.movementSpeed = Mathf.Lerp(orb.movementSpeed, 5, 1);
                 break;
             case BotSpeed.fast:
                 speed = 5.5f;
+                orb.movementSpeed = Mathf.Lerp(orb.movementSpeed, 8, 1);
                 break;
             default:
                 Debug.Log("Unknown speed");
@@ -121,6 +125,8 @@ public class BaseFloatRobot : BaseRobot
             {
                 //a
                 botSpeed = BotSpeed.still;
+
+                transform.LookAt(player);
                 //b
                 attackCharge += Time.deltaTime;
                 //c
@@ -168,7 +174,7 @@ public class BaseFloatRobot : BaseRobot
         //1
         location = transform.position;
         float distance = (location - transform.position).magnitude;
-        if(distance < 5)
+        if(distance < 1)
         {
             //2
             float r = 15;

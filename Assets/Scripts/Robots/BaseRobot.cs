@@ -15,13 +15,13 @@ public class BaseRobot : MonoBehaviour
     public float searchLimit = 5;
     public float awareness = 0;
 
-
     //state machine
     public enum BotSM
     {
         patrol, chase, attack, search, die
     }
     public BotSM botState;
+    public FloatingOrb orb;
 
     //speed machine
     public enum BotSpeed
@@ -29,7 +29,6 @@ public class BaseRobot : MonoBehaviour
         still, slow, medium, fast
     }
     public BotSpeed botSpeed;
-    private float speed = 0;
 
     /*See
      * 1 - make a vector that represents the space between the player and the bot
@@ -82,6 +81,7 @@ public class BaseRobot : MonoBehaviour
     {
         playerTransform = GameObject.Find("Player").transform;
         botState = BotSM.patrol;
+        orb = transform.GetChild(0).gameObject.GetComponent<FloatingOrb>();
     }
 
     //State Transitions
@@ -165,4 +165,5 @@ public class BaseRobot : MonoBehaviour
     {
         Destroy(gameObject);
     }
+
 }
